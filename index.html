@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="theme-color" content="#0b0f14" />
+  <meta name="description" content="Kevin Yancy C. Yangco — first-year AI Engineering student at Mapúa University Intramuros. Explore coursework, reflections, and interests in artificial intelligence." />
+  <title>Kevin Yancy C. Yangco | AI Engineering Student</title>
+  <style>
+    /* ------------------------------
+       1. Design tokens and base styles
+       ------------------------------ */
+    :root {
+      color-scheme: dark;
+      --bg: #0b0f14;
+      --bg-soft: #0f151c;
+      --surface: #131b24;
+      --surface-raised: #17222d;
+      --text: #f1f7fb;
+      --text-soft: #b6c2cc;
+      --muted: #83919e;
+      --cyan: #06b6d4;
+      --cyan-light: #67e8f9;
+      --cyan-soft: rgba(6, 182, 212, 0.12);
+      --border: rgba(148, 174, 190, 0.16);
+      --border-bright: rgba(6, 182, 212, 0.38);
+      --shadow: 0 18px 55px rgba(0, 0, 0, 0.24);
+      --radius: 20px;
+      --max-width: 1120px;
+      --nav-height: 76px;
+    }
+
+    *, *::before, *::after { box-sizing: border-box; }
+    html { scroll-behavior: smooth; scroll-padding-top: calc(var(--nav-height) + 18px); }
+    body {
+      margin: 0;
+      min-width: 320px;
+      background:
+        radial-gradient(ellipse at 78% 7%, rgba(6, 182, 212, 0.09), transparent 32rem),
+        radial-gradient(ellipse at 4% 45%, rgba(20, 86, 111, 0.12), transparent 30rem),
+        var(--bg);
+      color: var(--text);
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      line-height: 1.7;
+      -webkit-font-smoothing: antialiased;
+      text-rendering: optimizeLegibility;
+    }
+    body.menu-open { overflow: hidden; }
+    a { color: inherit; text-decoration: none; }
+    button, input, textarea { font: inherit; }
+    button, a { -webkit-tap-highlight-color: transparent; }
+    button:focus-visible, a:focus-visible, input:focus-visible, textarea:focus-visible {
+      outline: 2px solid var(--cyan-light);
+      outline-offset: 4px;
+    }
+    ::selection { background: rgba(6, 182, 212, 0.34); color: #fff; }
+    .container { width: min(var(--max-width), calc(100% - 48px)); margin-inline: auto; }
+    .section { padding: 106px 0; position: relative; }
+    .section--alt { background: linear-gradient(180deg, rgba(255,255,255,0.012), rgba(255,255,255,0)); }
+    .eyebrow {
+      display: inline-flex; align-items: center; gap: 10px;
+      margin: 0 0 16px; color: var(--cyan-light); font-size: 0.78rem;
+      font-weight: 800; letter-spacing: 0.16em; text-transform: uppercase;
+    }
+    .eyebrow::before { content: ""; width: 24px; height: 1px; background: var(--cyan); }
+    .section-heading { max-width: 720px; margin-bottom: 42px; }
+    .section-heading h2 {
+      margin: 0; font-size: clamp(2rem, 4vw, 3.1rem); line-height: 1.14;
+      letter-spacing: -0.045em; font-weight: 780;
+    }
+    .section-heading p { max-width: 630px; margin: 18px 0 0; color: var(--text-soft); }
+    .accent { color: var(--cyan-light); }
+    .muted { color: var(--muted); }
+
+    /* ------------------------------
+       2. Sticky header and navigation
+       ------------------------------ */
+    .site-header {
+      position: sticky; top: 0; z-index: 1000; height: var(--nav-height);
+      background: rgba(11, 15, 20, 0.82); border-bottom: 1px solid rgba(148, 174, 190, 0.1);
+      backdrop-filter: blur(18px); -webkit-backdrop-filter: blur(18px);
+    }
+    .nav-wrap { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 28px; }
+    .brand { display: inline-flex; align-items: center; gap: 12px; flex-shrink: 0; font-weight: 800; letter-spacing: -0.025em; }
+    .brand-mark {
+      display: grid; place-items: center; width: 38px; height: 38px; border-radius: 12px;
+      color: var(--cyan-light); border: 1px solid var(--border-bright); background: var(--cyan-soft);
+      box-shadow: inset 0 0 18px rgba(6, 182, 212, 0.08); font-size: 0.78rem; letter-spacing: -0.04em;
+    }
+    .brand-name { font-size: 0.92rem; }
+    .brand-name span { color: var(--cyan-light); }
+    .nav-links { display: flex; align-items: center; gap: 28px; margin: 0; padding: 0; list-style: none; }
+    .nav-links a {
+      display: inline-flex; align-items: center; min-height: 42px; position: relative;
+      color: var(--text-soft); font-size: 0.86rem; font-weight: 650; transition: color 180ms ease;
+    }
+    .nav-links a::after { content: ""; position: absolute; left: 0; right: 100%; bottom: 4px; height: 2px; background: var(--cyan); transition: right 180ms ease; }
+    .nav-links a:hover, .nav-links a[aria-current="location"] { color: var(--text); }
+    .nav-links a:hover::after, .nav-links a[aria-current="location"]::after { right: 0; }
+    .nav-contact { padding: 9px 16px; border: 1px solid var(--border-bright); border-radius: 999px; color: var(--cyan-light) !important; }
+    .nav-contact::after { display: none; }
+    .nav-contact:hover { background: var(--cyan-soft); }
+    .menu-toggle { display: none; width: 44px; height: 44px; border: 1px solid var(--border); border-radius: 12px; background: var(--surface); color: var(--text); cursor: pointer; }
+    .menu-toggle svg { width: 21px; height: 21px; }
+
+    /* ------------------------------
+       3. Buttons and shared components
+       ------------------------------ */
+    .button {
+      min-height: 48px; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
+      padding: 12px 19px; border: 1px solid transparent; border-radius: 12px; cursor: pointer;
+      font-weight: 750; font-size: 0.91rem; transition: transform 180ms ease, box-shadow 180ms ease, background 180ms ease, border-color 180ms ease;
+    }
+    .button:hover { transform: translateY(-2px); }
+    .button--primary { background: var(--cyan); color: #041115; box-shadow: 0 8px 26px rgba(6, 182, 212, 0.18); }
+    .button--primary:hover { background: #35cce4; box-shadow: 0 10px 32px rgba(6, 182, 212, 0.28); }
+    .button--secondary { background: rgba(255,255,255,0.025); color: var(--text); border-color: var(--border); }
+    .button--secondary:hover { border-color: var(--border-bright); background: var(--cyan-soft); }
+    .button svg { width: 17px; height: 17px; }
+    .card {
+      background: linear-gradient(145deg, rgba(23, 34, 45, 0.96), rgba(16, 23, 31, 0.96));
+      border: 1px solid var(--border); border-radius: var(--radius); box-shadow: var(--shadow);
+      transition: transform 220ms ease, border-color 220ms ease, box-shadow 220ms ease;
+    }
+    .card:hover { transform: translateY(-5px); border-color: var(--border-bright); box-shadow: 0 22px 65px rgba(0,0,0,0.32), 0 0 24px rgba(6,182,212,0.04); }
+
+    /* ------------------------------
+       4. Hero section
+       ------------------------------ */
+    .hero { min-height: calc(100svh - var(--nav-height)); display: flex; align-items: center; padding: 84px 0 96px; overflow: hidden; }
+    .hero::before {
+      content: ""; position: absolute; width: 520px; height: 520px; right: -170px; top: 8%; border-radius: 50%;
+      border: 1px solid rgba(6,182,212,0.10); box-shadow: 0 0 0 46px rgba(6,182,212,0.025), 0 0 0 92px rgba(6,182,212,0.018);
+      pointer-events: none;
+    }
+    .hero-grid { position: absolute; inset: 0; pointer-events: none; opacity: 0.16; background-image: linear-gradient(rgba(112, 150, 168, 0.13) 1px, transparent 1px), linear-gradient(90deg, rgba(112, 150, 168, 0.13) 1px, transparent 1px); background-size: 58px 58px; mask-image: linear-gradient(90deg, black, transparent 76%); }
+    .hero-layout { position: relative; display: grid; grid-template-columns: minmax(0, 1.2fr) minmax(280px, 0.8fr); gap: 54px; align-items: center; }
+    .availability { display: inline-flex; align-items: center; gap: 10px; padding: 7px 12px; margin-bottom: 24px; color: var(--text-soft); font-size: 0.82rem; border: 1px solid var(--border); border-radius: 999px; background: rgba(19, 27, 36, 0.76); }
+    .status-dot { width: 7px; height: 7px; border-radius: 50%; background: var(--cyan-light); box-shadow: 0 0 12px rgba(103,232,249,0.72); }
+    .hero h1 { max-width: 760px; margin: 0; font-size: clamp(2.85rem, 6.3vw, 5.25rem); line-height: 1.01; letter-spacing: -0.065em; font-weight: 850; }
+    .hero h1 .name-line { display: block; }
+    .hero h1 .outline-text { color: transparent; -webkit-text-stroke: 1px rgba(103,232,249,0.8); }
+    .hero-role { max-width: 610px; margin: 25px 0 0; color: var(--text-soft); font-size: clamp(1.02rem, 1.7vw, 1.2rem); line-height: 1.75; }
+    .hero-role strong { color: var(--text); font-weight: 700; }
+    .hero-actions { display: flex; flex-wrap: wrap; gap: 13px; margin-top: 32px; }
+    .hero-note { margin: 30px 0 0; color: var(--muted); font-size: 0.83rem; display: flex; align-items: center; gap: 9px; }
+    .hero-note svg { width: 16px; height: 16px; color: var(--cyan-light); flex: none; }
+    .hero-visual { position: relative; min-height: 410px; display: grid; place-items: center; }
+    .orbit { position: absolute; width: min(100%, 390px); aspect-ratio: 1; border: 1px solid rgba(6,182,212,0.2); border-radius: 50%; animation: orbit-float 8s ease-in-out infinite; }
+    .orbit::before, .orbit::after { content: ""; position: absolute; border-radius: 50%; border: 1px dashed rgba(103,232,249,0.2); inset: 35px; }
+    .orbit::after { inset: 75px; border-style: solid; border-color: rgba(103,232,249,0.12); }
+    .orbit-dot { position: absolute; width: 11px; height: 11px; border-radius: 50%; background: var(--cyan-light); box-shadow: 0 0 22px rgba(103,232,249,0.8); top: 18%; right: 16%; }
+    .code-card { position: relative; width: min(100%, 335px); padding: 22px; border: 1px solid rgba(6,182,212,0.28); border-radius: 20px; background: rgba(12, 19, 26, 0.88); box-shadow: 0 24px 80px rgba(0,0,0,0.4), 0 0 48px rgba(6,182,212,0.09); backdrop-filter: blur(12px); transform: rotate(-2deg); }
+    .code-card-head { display: flex; align-items: center; gap: 6px; padding-bottom: 17px; border-bottom: 1px solid var(--border); }
+    .window-dot { width: 8px; height: 8px; border-radius: 50%; background: #53616c; }
+    .window-dot:first-child { background: #fb7185; } .window-dot:nth-child(2) { background: #fbbf24; } .window-dot:nth-child(3) { background: #34d399; }
+    .file-name { margin-left: auto; color: var(--muted); font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 0.7rem; }
+    .code-lines { padding-top: 18px; color: #b5c5d1; font: 0.78rem/2.15 ui-monospace, SFMono-Regular, Menlo, monospace; white-space: nowrap; }
+    .code-lines .indent { padding-left: 18px; }
+    .code-key { color: #67e8f9; } .code-value { color: #c4b5fd; } .code-comment { color: #6f8794; }
+    .mini-stat { position: absolute; z-index: 2; display: flex; align-items: center; gap: 10px; padding: 12px 15px; border: 1px solid var(--border); border-radius: 14px; background: rgba(19,27,36,0.93); box-shadow: var(--shadow); }
+    .mini-stat svg { width: 19px; height: 19px; color: var(--cyan-light); }
+    .mini-stat strong { display: block; font-size: 0.78rem; line-height: 1.4; }
+    .mini-stat span { display: block; font-size: 0.68rem; color: var(--muted); }
+    .mini-stat--top { top: 14%; right: -1%; }
+    .mini-stat--bottom { bottom: 11%; left: -2%; }
+    @keyframes orbit-float { 0%, 100% { transform: scale(1) rotate(0deg); } 50% { transform: scale(1.025) rotate(4deg); } }
+
+    /* ------------------------------
+       5. About section
+       ------------------------------ */
+    .about-grid { display: grid; grid-template-columns: minmax(0, 1.25fr) minmax(250px, 0.75fr); gap: 52px; align-items: start; }
+    .about-copy p { margin: 0 0 20px; color: var(--text-soft); font-size: 1.03rem; }
+    .about-copy h3 { margin: 30px 0 11px; font-size: 1.25rem; letter-spacing: -0.025em; }
+    .principles { display: grid; gap: 14px; }
+    .principle { display: flex; gap: 15px; padding: 19px; border-radius: 16px; border: 1px solid var(--border); background: rgba(19,27,36,0.65); }
+    .principle-icon { display: grid; place-items: center; width: 42px; height: 42px; flex: none; border-radius: 12px; color: var(--cyan-light); background: var(--cyan-soft); border: 1px solid rgba(6,182,212,0.18); }
+    .principle-icon svg { width: 20px; height: 20px; }
+    .principle h4 { margin: 0 0 4px; font-size: 0.94rem; }
+    .principle p { margin: 0; color: var(--muted); font-size: 0.83rem; line-height: 1.6; }
+
+    /* ------------------------------
+       6. Portfolio cards
+       ------------------------------ */
+    .portfolio-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 20px; }
+    .project-card { display: flex; flex-direction: column; min-height: 100%; overflow: hidden; }
+    .project-art { min-height: 154px; display: grid; place-items: center; position: relative; overflow: hidden; border-bottom: 1px solid var(--border); background: radial-gradient(circle at 50% 55%, rgba(6,182,212,0.16), transparent 58%), #101821; }
+    .project-art::before { content: ""; position: absolute; inset: 0; background-image: linear-gradient(rgba(103,232,249,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(103,232,249,0.06) 1px, transparent 1px); background-size: 24px 24px; mask-image: radial-gradient(ellipse at center, black, transparent 80%); }
+    .art-icon { z-index: 1; display: grid; place-items: center; width: 74px; height: 74px; color: var(--cyan-light); border: 1px solid rgba(6,182,212,0.35); border-radius: 22px; background: rgba(6,182,212,0.10); box-shadow: 0 0 36px rgba(6,182,212,0.12); }
+    .art-icon svg { width: 34px; height: 34px; }
+    .project-content { padding: 23px; display: flex; flex-direction: column; flex: 1; }
+    .project-meta { display: flex; align-items: center; justify-content: space-between; gap: 10px; margin-bottom: 13px; }
+    .tag { display: inline-flex; align-items: center; width: fit-content; padding: 5px 9px; border-radius: 7px; color: var(--cyan-light); background: var(--cyan-soft); border: 1px solid rgba(6,182,212,0.14); font-size: 0.68rem; font-weight: 800; letter-spacing: 0.03em; }
+    .project-number { color: #536875; font: 0.75rem ui-monospace, SFMono-Regular, Menlo, monospace; }
+    .project-content h3 { margin: 0; font-size: 1.15rem; line-height: 1.35; letter-spacing: -0.025em; }
+    .project-content p { margin: 13px 0 19px; color: var(--text-soft); font-size: 0.88rem; line-height: 1.7; }
+    .project-footer { display: flex; align-items: center; justify-content: space-between; gap: 14px; margin-top: auto; padding-top: 16px; border-top: 1px solid var(--border); }
+    .project-footer span { color: var(--muted); font-size: 0.75rem; }
+    .text-link { display: inline-flex; align-items: center; gap: 7px; padding: 0; border: 0; background: none; color: var(--cyan-light); font-size: 0.83rem; font-weight: 800; cursor: pointer; }
+    .text-link svg { width: 15px; height: 15px; transition: transform 180ms ease; }
+    .text-link:hover svg { transform: translateX(4px); }
+    .portfolio-note { display: flex; align-items: flex-start; gap: 10px; margin-top: 24px; color: var(--muted); font-size: 0.82rem; }
+    .portfolio-note svg { width: 17px; height: 17px; color: var(--cyan-light); flex: none; margin-top: 3px; }
+
+    /* ------------------------------
+       7. Reflections / blog
+       ------------------------------ */
+    .reflection-list { display: grid; gap: 17px; }
+    .reflection-card { display: grid; grid-template-columns: 150px minmax(0, 1fr); gap: 26px; padding: 27px; }
+    .reflection-date { display: flex; flex-direction: column; gap: 8px; padding-right: 22px; border-right: 1px solid var(--border); }
+    .reflection-date strong { font-size: 1rem; line-height: 1.3; color: var(--cyan-light); }
+    .reflection-date span { color: var(--muted); font-size: 0.77rem; }
+    .reflection-body h3 { margin: 0 0 10px; font-size: 1.2rem; letter-spacing: -0.025em; }
+    .reflection-body p { margin: 0; color: var(--text-soft); font-size: 0.93rem; }
+    .reflection-label { display: inline-flex; margin-top: 15px; color: var(--muted); font-size: 0.73rem; }
+
+    /* ------------------------------
+       8. Contact section and footer
+       ------------------------------ */
+    .contact-panel { display: grid; grid-template-columns: minmax(0, 0.95fr) minmax(0, 1.05fr); gap: 45px; padding: clamp(24px, 5vw, 48px); overflow: hidden; position: relative; }
+    .contact-panel::before { content: ""; position: absolute; left: -130px; bottom: -220px; width: 360px; height: 360px; border: 1px solid rgba(6,182,212,0.12); border-radius: 50%; box-shadow: 0 0 0 35px rgba(6,182,212,0.025), 0 0 0 70px rgba(6,182,212,0.018); pointer-events: none; }
+    .contact-intro, .contact-form-wrap { position: relative; }
+    .contact-intro h3 { max-width: 420px; margin: 0 0 16px; font-size: clamp(1.8rem, 3.4vw, 2.6rem); line-height: 1.15; letter-spacing: -0.045em; }
+    .contact-intro > p { max-width: 400px; margin: 0; color: var(--text-soft); }
+    .email-block { margin-top: 28px; padding: 17px; border: 1px solid var(--border-bright); border-radius: 14px; background: rgba(6,182,212,0.065); }
+    .email-label { display: block; margin-bottom: 6px; color: var(--muted); font-size: 0.73rem; letter-spacing: 0.09em; text-transform: uppercase; font-weight: 800; }
+    .email-address { display: inline-block; color: var(--cyan-light); font-weight: 750; font-size: clamp(0.86rem, 1.4vw, 1rem); overflow-wrap: anywhere; }
+    .contact-help { color: var(--muted); font-size: 0.77rem; margin-top: 10px !important; }
+    .contact-form-wrap { padding: 24px; border: 1px solid var(--border); border-radius: 16px; background: rgba(8,13,19,0.46); }
+    .contact-form-wrap h4 { margin: 0 0 5px; font-size: 1.02rem; }
+    .form-intro { margin: 0 0 19px; color: var(--muted); font-size: 0.8rem; }
+    .form-field { margin-bottom: 14px; }
+    .form-field label { display: block; margin-bottom: 7px; font-size: 0.8rem; font-weight: 700; color: #d6e0e8; }
+    .form-field input, .form-field textarea { display: block; width: 100%; padding: 12px 13px; border: 1px solid rgba(148,174,190,0.2); border-radius: 10px; background: #0c1218; color: var(--text); outline: none; transition: border-color 180ms ease, box-shadow 180ms ease; }
+    .form-field input::placeholder, .form-field textarea::placeholder { color: #657481; }
+    .form-field input:focus, .form-field textarea:focus { border-color: var(--cyan); box-shadow: 0 0 0 3px rgba(6,182,212,0.1); }
+    .form-field textarea { min-height: 105px; resize: vertical; }
+    .form-submit { width: 100%; }
+    .form-status { margin: 13px 0 0; color: var(--cyan-light); font-size: 0.8rem; min-height: 1.4em; }
+    .site-footer { padding: 26px 0 34px; border-top: 1px solid rgba(148,174,190,0.12); }
+    .footer-inner { display: flex; align-items: center; justify-content: space-between; gap: 20px; }
+    .footer-copy, .footer-credit { margin: 0; color: var(--muted); font-size: 0.78rem; }
+    .footer-copy strong { color: var(--text-soft); }
+    .back-to-top { display: inline-flex; align-items: center; gap: 7px; color: var(--text-soft); font-size: 0.8rem; transition: color 180ms ease; }
+    .back-to-top:hover { color: var(--cyan-light); }
+    .back-to-top svg { width: 16px; height: 16px; }
+
+    /* ------------------------------
+       9. Project details dialog
+       ------------------------------ */
+    .modal-backdrop { position: fixed; inset: 0; z-index: 2000; display: grid; place-items: center; padding: 20px; background: rgba(2,6,10,0.76); backdrop-filter: blur(8px); }
+    .modal-backdrop[hidden] { display: none; }
+    .modal { width: min(560px, 100%); max-height: min(78vh, 700px); overflow: auto; padding: 28px; border: 1px solid var(--border-bright); border-radius: 20px; background: #111922; box-shadow: 0 24px 90px rgba(0,0,0,0.55); }
+    .modal-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; }
+    .modal h3 { margin: 13px 0 0; font-size: 1.45rem; line-height: 1.25; letter-spacing: -0.03em; }
+    .modal p { color: var(--text-soft); font-size: 0.93rem; }
+    .modal h4 { margin: 23px 0 8px; font-size: 0.95rem; }
+    .modal ul { padding-left: 21px; color: var(--text-soft); font-size: 0.9rem; }
+    .modal li + li { margin-top: 7px; }
+    .modal-close { flex: none; display: grid; place-items: center; width: 38px; height: 38px; border: 1px solid var(--border); border-radius: 11px; background: var(--surface-raised); color: var(--text); cursor: pointer; }
+    .modal-close svg { width: 18px; height: 18px; }
+
+    /* ------------------------------
+       10. Responsive layout
+       ------------------------------ */
+    @media (max-width: 960px) {
+      .nav-links { gap: 17px; }
+      .nav-links a { font-size: 0.81rem; }
+      .hero-layout { grid-template-columns: minmax(0, 1.1fr) minmax(240px, 0.9fr); gap: 28px; }
+      .hero-visual { min-height: 350px; }
+      .orbit { width: 330px; }
+      .mini-stat--top { right: -4%; }
+      .mini-stat--bottom { left: -4%; }
+      .portfolio-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+      .project-card:last-child { grid-column: 1 / -1; }
+      .project-card:last-child .project-art { min-height: 130px; }
+    }
+    @media (max-width: 760px) {
+      :root { --nav-height: 68px; }
+      .container { width: min(var(--max-width), calc(100% - 36px)); }
+      .section { padding: 78px 0; }
+      .menu-toggle { display: grid; place-items: center; }
+      .nav-links { position: fixed; left: 0; right: 0; top: var(--nav-height); display: flex; flex-direction: column; align-items: stretch; gap: 2px; padding: 18px 24px 25px; background: rgba(11,15,20,0.98); border-bottom: 1px solid var(--border); transform: translateY(-12px); opacity: 0; visibility: hidden; pointer-events: none; transition: opacity 180ms ease, transform 180ms ease, visibility 180ms ease; }
+      .nav-links.is-open { transform: translateY(0); opacity: 1; visibility: visible; pointer-events: auto; }
+      .nav-links li { width: 100%; }
+      .nav-links a { width: 100%; min-height: 46px; font-size: 0.94rem; }
+      .nav-links a::after { display: none; }
+      .nav-contact { justify-content: center; margin-top: 8px; }
+      .hero { padding: 68px 0 82px; min-height: auto; }
+      .hero-layout { grid-template-columns: 1fr; gap: 12px; }
+      .hero h1 { font-size: clamp(2.75rem, 12vw, 4.8rem); }
+      .hero-visual { min-height: 340px; margin-top: 15px; }
+      .orbit { width: min(88vw, 330px); }
+      .mini-stat--top { top: 9%; right: 4%; }
+      .mini-stat--bottom { bottom: 5%; left: 2%; }
+      .about-grid { grid-template-columns: 1fr; gap: 30px; }
+      .contact-panel { grid-template-columns: 1fr; gap: 30px; }
+      .reflection-card { grid-template-columns: 1fr; gap: 15px; padding: 23px; }
+      .reflection-date { flex-direction: row; align-items: center; justify-content: space-between; padding: 0 0 12px; border-right: 0; border-bottom: 1px solid var(--border); }
+      .footer-inner { align-items: flex-start; flex-direction: column; }
+    }
+    @media (max-width: 520px) {
+      .container { width: calc(100% - 30px); }
+      .brand-name { font-size: 0.84rem; }
+      .brand-mark { width: 35px; height: 35px; }
+      .section-heading { margin-bottom: 30px; }
+      .hero h1 { font-size: clamp(2.45rem, 12vw, 3.6rem); }
+      .hero-actions { flex-direction: column; align-items: stretch; }
+      .hero-actions .button { width: 100%; }
+      .hero-visual { min-height: 295px; }
+      .code-card { width: min(94%, 310px); padding: 17px; }
+      .code-lines { font-size: 0.68rem; }
+      .mini-stat { padding: 9px 11px; }
+      .mini-stat strong { font-size: 0.7rem; }
+      .mini-stat span { font-size: 0.62rem; }
+      .portfolio-grid { grid-template-columns: 1fr; }
+      .project-card:last-child { grid-column: auto; }
+      .project-art { min-height: 140px; }
+      .contact-form-wrap { padding: 18px; }
+      .email-address { font-size: 0.84rem; }
+      .modal { padding: 22px; }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after { scroll-behavior: auto !important; animation-duration: 0.01ms !important; animation-iteration-count: 1 !important; transition-duration: 0.01ms !important; }
+    }
+  </style>
+</head>
+<body>
+  <!-- Sticky navigation -->
+  <header class="site-header">
+    <nav class="container nav-wrap" aria-label="Main navigation">
+      <a class="brand" href="#home" aria-label="Kevin Yangco, home">
+        <span class="brand-mark" aria-hidden="true">KY</span>
+        <span class="brand-name">Kevin Yangco<span>.</span></span>
+      </a>
+      <button class="menu-toggle" id="menuToggle" type="button" aria-label="Open navigation menu" aria-expanded="false" aria-controls="navLinks">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16" /></svg>
+      </button>
+      <ul class="nav-links" id="navLinks">
+        <li><a href="#home">Home</a></li>
+        <li><a href="#about">About</a></li>
+        <li><a href="#portfolio">Portfolio</a></li>
+        <li><a href="#reflections">Reflections</a></li>
+        <li><a class="nav-contact" href="#contact">Contact <span aria-hidden="true">↗</span></a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Hero / Home -->
+    <section class="hero" id="home" aria-labelledby="hero-title">
+      <div class="hero-grid" aria-hidden="true"></div>
+      <div class="container hero-layout">
+        <div class="hero-copy">
+          <div class="availability"><span class="status-dot" aria-hidden="true"></span> Learning, building, and exploring AI</div>
+          <p class="eyebrow">Hello, I'm</p>
+          <h1 id="hero-title"><span class="name-line">Kevin Yancy</span><span class="name-line outline-text">C. Yangco</span></h1>
+          <p class="hero-role"><strong>1st-Year AI Engineering Student</strong> at Mapúa University Intramuros, interested in how artificial intelligence, logic, and thoughtful design can help solve real-world problems.</p>
+          <div class="hero-actions">
+            <a class="button button--primary" href="#portfolio">Explore My Portfolio <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6" /></svg></a>
+            <a class="button button--secondary" href="#about">Get to Know Me</a>
+          </div>
+          <p class="hero-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.2 6.8L21 12l-6.8 2.2L12 21l-2.2-6.8L3 12l6.8-2.2L12 3z" /></svg> A student portfolio for AIE100: AI Engineering as a Discipline</p>
+        </div>
+        <div class="hero-visual" aria-label="Decorative code illustration">
+          <div class="orbit" aria-hidden="true"><span class="orbit-dot"></span></div>
+          <div class="code-card">
+            <div class="code-card-head"><span class="window-dot"></span><span class="window-dot"></span><span class="window-dot"></span><span class="file-name">learning_path.py</span></div>
+            <div class="code-lines" aria-label="Illustrative Python-style code">
+              <div><span class="code-key">student</span> = <span class="code-value">"Kevin Yangco"</span></div>
+              <div><span class="code-key">field</span> = <span class="code-value">"AI Engineering"</span></div>
+              <div><span class="code-key">curiosity</span> = <span class="code-value">True</span></div>
+              <div class="indent"><span class="code-comment"># Learn a little every day</span></div>
+              <div><span class="code-key">while</span> curiosity:</div>
+              <div class="indent">explore()</div>
+              <div class="indent">build_and_reflect()</div>
+            </div>
+          </div>
+          <div class="mini-stat mini-stat--top"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3l2.6 5.4L20 11l-5.4 2.6L12 19l-2.6-5.4L4 11l5.4-2.6L12 3z" /></svg><div><strong>Curiosity first</strong><span>Always keep learning</span></div></div>
+          <div class="mini-stat mini-stat--bottom"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 19V5m0 14h16M8 15l3-4 3 2 5-7" /></svg><div><strong>Learn by doing</strong><span>Ideas into practice</span></div></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About me -->
+    <section class="section section--alt" id="about" aria-labelledby="about-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">A little about me</p>
+          <h2 id="about-title">Curious about technology.<br /><span class="accent">Focused on what comes next.</span></h2>
+        </div>
+        <div class="about-grid">
+          <div class="about-copy">
+            <p>I am a dedicated first-year AI Engineering student at Mapúa University Intramuros, beginning my journey in a field that continues to shape how people learn, work, and solve problems. I enjoy exploring emerging technologies and building a strong foundation in the ideas behind them—from logical thinking and computing concepts to the ways intelligent systems can be designed responsibly.</p>
+            <h3>Why I chose AI Engineering</h3>
+            <p>Artificial intelligence fascinates me because it brings together analytical thinking, creativity, and practical problem-solving. I chose AI Engineering to better understand how intelligent systems learn from information, recognize patterns, and support decisions. My goal is to keep developing my skills, ask thoughtful questions about the technology I use, and contribute to a future where smart solutions are useful, responsible, and designed with people in mind.</p>
+          </div>
+          <div class="principles" aria-label="Learning priorities">
+            <article class="principle">
+              <span class="principle-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M8 12l2.5 2.5L16.5 8.5"/></svg></span>
+              <div><h4>Build strong foundations</h4><p>Develop core knowledge in logic, computing, and AI concepts.</p></div>
+            </article>
+            <article class="principle">
+              <span class="principle-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v3m0 12v3M3 12h3m12 0h3M5.6 5.6l2.1 2.1m8.6 8.6 2.1 2.1m0-12.8-2.1 2.1m-8.6 8.6-2.1 2.1"/><circle cx="12" cy="12" r="4"/></svg></span>
+              <div><h4>Stay curious</h4><p>Explore new tools, ask questions, and learn from mistakes.</p></div>
+            </article>
+            <article class="principle">
+              <span class="principle-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s8-4 8-11V5l-8-3-8 3v5c0 7 8 11 8 11z"/><path d="M9 12l2 2 4-4"/></svg></span>
+              <div><h4>Think responsibly</h4><p>Consider fairness, privacy, and the human impact of technology.</p></div>
+            </article>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Portfolio -->
+    <section class="section" id="portfolio" aria-labelledby="portfolio-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Selected learning work</p>
+          <h2 id="portfolio-title">My <span class="accent">portfolio.</span></h2>
+          <p>A snapshot of the kinds of exercises and ideas that fit my early journey in AI Engineering. These are sample AIE100-level portfolio entries that can be updated with actual coursework as it is completed.</p>
+        </div>
+        <div class="portfolio-grid">
+          <article class="card project-card">
+            <div class="project-art" aria-hidden="true"><div class="art-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.5"/><path d="M12 3.5v4M12 16.5v4M3.5 12h4M16.5 12h4M8.5 8.5l7 7m0-7-7 7"/></svg></div></div>
+            <div class="project-content">
+              <div class="project-meta"><span class="tag">AI Fundamentals</span><span class="project-number">01 / 03</span></div>
+              <h3>Introduction to AI Lab Work</h3>
+              <p>A beginner-friendly exploration of what artificial intelligence is, how it differs from traditional rule-based programs, and where AI applications appear in everyday life.</p>
+              <div class="project-footer"><span>Learning exercise</span><button class="text-link project-more" type="button" data-project="ai-lab">Read More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button></div>
+            </div>
+          </article>
+          <article class="card project-card">
+            <div class="project-art" aria-hidden="true"><div class="art-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3z"/><path d="M4.5 7.8L12 12l7.5-4.2M12 12v8.5M8 5.2l8 4.5"/></svg></div></div>
+            <div class="project-content">
+              <div class="project-meta"><span class="tag">AI Ethics</span><span class="project-number">02 / 03</span></div>
+              <h3>Data Science Ethics Report</h3>
+              <p>A short report concept examining data privacy, potential bias, and why transparent, responsible choices matter when developing or using intelligent systems.</p>
+              <div class="project-footer"><span>Written reflection</span><button class="text-link project-more" type="button" data-project="ethics-report">Read More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button></div>
+            </div>
+          </article>
+          <article class="card project-card">
+            <div class="project-art" aria-hidden="true"><div class="art-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="16" rx="2"/><path d="M7 8l3 2.5L7 13m5 0h5"/></svg></div></div>
+            <div class="project-content">
+              <div class="project-meta"><span class="tag">Logic & Algorithms</span><span class="project-number">03 / 03</span></div>
+              <h3>Algorithms &amp; Logic Output</h3>
+              <p>A practice activity focused on breaking a problem into clear steps, tracing decision paths, and explaining how a simple algorithm reaches an output.</p>
+              <div class="project-footer"><span>Problem-solving exercise</span><button class="text-link project-more" type="button" data-project="logic-output">Read More <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14m-6-6 6 6-6 6" /></svg></button></div>
+            </div>
+          </article>
+        </div>
+        <p class="portfolio-note"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5m0-8h.01"/></svg><span>Portfolio note: These entries are sample descriptions for the website. Replace or revise them to match the actual work, requirements, and feedback from your AIE100 class before submission.</span></p>
+      </div>
+    </section>
+
+    <!-- Reflections / Blog -->
+    <section class="section section--alt" id="reflections" aria-labelledby="reflections-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Notes from the learning process</p>
+          <h2 id="reflections-title">Reflections &amp; <span class="accent">blog.</span></h2>
+          <p>Short reflections on ideas from AIE100 and the habits I want to carry into my studies.</p>
+        </div>
+        <div class="reflection-list">
+          <article class="card reflection-card">
+            <div class="reflection-date"><strong>15 Sep 2026</strong><span>AIE100 · Reflection 01</span></div>
+            <div class="reflection-body">
+              <h3>My First Weeks in AIE100</h3>
+              <p>My first weeks in AIE100 have helped me see AI Engineering as more than writing code—it also involves understanding problems, thinking logically, and considering the people affected by a solution. I am learning to approach unfamiliar topics with patience and curiosity, knowing that strong fundamentals will make more advanced concepts easier to understand.</p>
+              <span class="reflection-label">Learning mindset · Foundations</span>
+            </div>
+          </article>
+          <article class="card reflection-card">
+            <div class="reflection-date"><strong>03 Oct 2026</strong><span>AIE100 · Reflection 02</span></div>
+            <div class="reflection-body">
+              <h3>Understanding the Impact of AI</h3>
+              <p>Exploring AI's impact has reminded me that a technology can be powerful while still raising questions about fairness, privacy, and accountability. As I continue learning, I want to evaluate not only whether a system works, but also how responsibly it is designed and how its outcomes may affect different people.</p>
+              <span class="reflection-label">Responsible AI · Ethics</span>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Contact -->
+    <section class="section" id="contact" aria-labelledby="contact-title">
+      <div class="container">
+        <div class="section-heading">
+          <p class="eyebrow">Get in touch</p>
+          <h2 id="contact-title">Let's connect over <span class="accent">ideas.</span></h2>
+          <p>Questions, academic conversations, and constructive feedback are welcome. Email is my only listed contact method.</p>
+        </div>
+        <div class="card contact-panel">
+          <div class="contact-intro">
+            <h3>Have a question or an idea to share?</h3>
+            <p>I am always open to learning from others and discussing how technology can be used to solve meaningful problems.</p>
+            <div class="email-block">
+              <span class="email-label">Email me directly</span>
+              <a class="email-address" href="mailto:yccyancykevinyangco@gmail.com">yccyancykevinyangco@gmail.com</a>
+            </div>
+            <p class="contact-help">For a real message, please use your email app to contact me directly.</p>
+          </div>
+          <div class="contact-form-wrap">
+            <h4>Send a message</h4>
+            <p class="form-intro">A visual form preview for this portfolio website.</p>
+            <form id="contactForm">
+              <div class="form-field"><label for="visitorName">Name</label><input id="visitorName" name="name" type="text" placeholder="Your name" autocomplete="name" required /></div>
+              <div class="form-field"><label for="visitorEmail">Email</label><input id="visitorEmail" name="email" type="email" placeholder="you@example.com" autocomplete="email" required /></div>
+              <div class="form-field"><label for="visitorMessage">Message</label><textarea id="visitorMessage" name="message" placeholder="Write your message..." required></textarea></div>
+              <button class="button button--primary form-submit" type="submit">Submit Message <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" /></svg></button>
+              <p class="form-status" id="formStatus" role="status" aria-live="polite"></p>
+            </form>
+          </div>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p class="footer-copy">© <span id="currentYear">2026</span> <strong>Kevin Yancy C. Yangco</strong>. Built as an AIE100 portfolio.</p>
+      <a class="back-to-top" href="#home">Back to top <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 19V5m-6 6 6-6 6 6" /></svg></a>
+    </div>
+  </footer>
+
+  <!-- Accessible project details dialog. Content is filled by JavaScript below. -->
+  <div class="modal-backdrop" id="projectModal" hidden>
+    <section class="modal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" aria-describedby="modalDescription">
+      <div class="modal-top">
+        <div><span class="tag" id="modalTag">Project overview</span><h3 id="modalTitle">Project title</h3></div>
+        <button class="modal-close" id="modalClose" type="button" aria-label="Close project details"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M6 6l12 12M18 6L6 18" /></svg></button>
+      </div>
+      <p id="modalDescription"></p>
+      <h4>Possible learning outcomes</h4>
+      <ul id="modalOutcomes"></ul>
+      <p class="muted" style="font-size:0.78rem; margin-top:22px;">Sample portfolio content — adapt this overview to reflect the work you actually complete for class.</p>
+    </section>
+  </div>
+
+  <script>
+    /* ------------------------------
+       Mobile navigation
+       ------------------------------ */
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    function closeMenu() {
+      navLinks.classList.remove('is-open');
+      menuToggle.setAttribute('aria-expanded', 'false');
+      menuToggle.setAttribute('aria-label', 'Open navigation menu');
+      document.body.classList.remove('menu-open');
+    }
+
+    menuToggle.addEventListener('click', () => {
+      const isOpen = navLinks.classList.toggle('is-open');
+      menuToggle.setAttribute('aria-expanded', String(isOpen));
+      menuToggle.setAttribute('aria-label', isOpen ? 'Close navigation menu' : 'Open navigation menu');
+      document.body.classList.toggle('menu-open', isOpen);
+    });
+
+    navLinks.querySelectorAll('a').forEach((link) => {
+      link.addEventListener('click', closeMenu);
+    });
+
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape') closeMenu();
+    });
+
+    /* ------------------------------
+       Project Read More dialogs
+       Note: These descriptions are illustrative sample content.
+       ------------------------------ */
+    const projectDetails = {
+      'ai-lab': {
+        tag: 'AI Fundamentals',
+        title: 'Introduction to AI Lab Work',
+        description: 'This sample entry introduces foundational AI ideas through everyday examples, such as recommendation systems, speech recognition, and image classification. The emphasis is on explaining the idea clearly before exploring tools or implementation.',
+        outcomes: [
+          'Describe AI in clear, beginner-friendly language.',
+          'Distinguish examples of AI-enabled systems from simple fixed-rule automation.',
+          'Identify questions to ask about data, limitations, and the intended use of a system.'
+        ]
+      },
+      'ethics-report': {
+        tag: 'AI Ethics',
+        title: 'Data Science Ethics Report',
+        description: 'This proposed report considers how the collection and use of data can affect people. It uses beginner-level scenarios to discuss privacy, dataset bias, transparency, and the importance of reviewing possible harms before deploying an AI system.',
+        outcomes: [
+          'Explain why data quality and representation influence outcomes.',
+          'Recognize privacy and fairness as part of responsible AI practice.',
+          'Support an ethical recommendation with reasons and a concrete example.'
+        ]
+      },
+      'logic-output': {
+        tag: 'Logic & Algorithms',
+        title: 'Algorithms & Logic Output',
+        description: 'This sample activity focuses on turning a small problem into a sequence of steps. A learner can describe the inputs, trace conditional branches, test a few cases, and explain why the algorithm produces a particular result.',
+        outcomes: [
+          'Break a problem into ordered, understandable steps.',
+          'Trace if/else decisions and predict outputs for test inputs.',
+          'Check edge cases and explain a solution in plain language.'
+        ]
+      }
+    };
+
+    const projectModal = document.getElementById('projectModal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalTag = document.getElementById('modalTag');
+    const modalDescription = document.getElementById('modalDescription');
+    const modalOutcomes = document.getElementById('modalOutcomes');
+    const modalClose = document.getElementById('modalClose');
+    let previouslyFocusedElement = null;
+
+    function openProjectModal(projectKey, trigger) {
+      const project = projectDetails[projectKey];
+      if (!project) return;
+      previouslyFocusedElement = trigger;
+      modalTag.textContent = project.tag;
+      modalTitle.textContent = project.title;
+      modalDescription.textContent = project.description;
+      modalOutcomes.replaceChildren(...project.outcomes.map((outcome) => {
+        const item = document.createElement('li');
+        item.textContent = outcome;
+        return item;
+      }));
+      projectModal.hidden = false;
+      document.body.style.overflow = 'hidden';
+      modalClose.focus();
+    }
+
+    function closeProjectModal() {
+      projectModal.hidden = true;
+      document.body.style.overflow = '';
+      if (previouslyFocusedElement) previouslyFocusedElement.focus();
+    }
+
+    document.querySelectorAll('.project-more').forEach((button) => {
+      button.addEventListener('click', () => openProjectModal(button.dataset.project, button));
+    });
+    modalClose.addEventListener('click', closeProjectModal);
+    projectModal.addEventListener('click', (event) => {
+      if (event.target === projectModal) closeProjectModal();
+    });
+    document.addEventListener('keydown', (event) => {
+      if (event.key === 'Escape' && !projectModal.hidden) closeProjectModal();
+    });
+
+    /* ------------------------------
+       Contact form demonstration
+       The form intentionally does not transmit or store data.
+       ------------------------------ */
+    const contactForm = document.getElementById('contactForm');
+    const formStatus = document.getElementById('formStatus');
+    contactForm.addEventListener('submit', (event) => {
+      event.preventDefault();
+      formStatus.textContent = 'This demo form does not send messages. Please email yccyancykevinyangco@gmail.com directly.';
+    });
+
+    /* Keep the copyright year current when the page is revisited. */
+    document.getElementById('currentYear').textContent = new Date().getFullYear();
+
+    /* Mark the current section in the navigation when supported by the browser. */
+    if ('IntersectionObserver' in window) {
+      const sectionLinks = [...document.querySelectorAll('.nav-links a[href^="#"]')];
+      const observedSections = sectionLinks
+        .map((link) => document.querySelector(link.getAttribute('href')))
+        .filter(Boolean);
+      const observer = new IntersectionObserver((entries) => {
+        entries.forEach((entry) => {
+          if (!entry.isIntersecting) return;
+          sectionLinks.forEach((link) => {
+            if (link.getAttribute('href') === `#${entry.target.id}`) {
+              link.setAttribute('aria-current', 'location');
+            } else {
+              link.removeAttribute('aria-current');
+            }
+          });
+        });
+      }, { rootMargin: '-30% 0px -55% 0px', threshold: 0 });
+      observedSections.forEach((section) => observer.observe(section));
+    }
+  </script>
+</body>
+</html>
